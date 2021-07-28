@@ -1,0 +1,99 @@
+﻿@using ViewModel.Common;
+@model PageResult<ViewModel.Catalog.Chapter.ChapterViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Scripts{
+    <script>
+        setTimeout(function () {
+            $('msgAlert').fadeOut('slow');
+        }, 2000);
+    </script>
+}
+<div class="container-fluid">
+    <h1 class="mt-4"></h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home Page</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Document">Document</a></li>
+        <li class="breadcrumb-item active">@ViewBag.DocumentName (@ViewBag.View)</li>
+    </ol>
+
+    <div class="card mb-12">
+        <div class="card-header">
+            <div class="row">
+                @if (User.IsInRole("admin"))
+                {
+                    <div class="col-md-6 col-xs-12">
+                        @Html.ActionLink("Create new Chapter", "CreateChapter", "Chapter", new { id = ViewBag.DocumentId }, new { @class = "btn btn-primary" })
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-6 col-xs-12">
+                        <a class="btn btn-success" asp-controller="Document" asp-action="Index">Back</a>
+                    </div>
+                }
+
+                <div class="col-md-6 col-xs-12">
+                    <form asp-action="Index" method="get">
+                        <div class="row">
+                            <div class="col-md-9">
+                                <input type="text" value="@ViewBag.KeywordChapter" name="keyword" class="form-control" />
+                            </div>
+                            <div class="cold-md-3">
+                                <button type="submit" class="btn btn-primary">Search</button>
+                                <button type="button" onclick="window.location.href='/Chapter/Index'" class="btn btn-dark">Reset</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            @if (ViewBag.SuccessMsgChapter != null)
+            {
+                <div id="msgAlert" class="alert alert-success" role="alert">
+                    @ViewBag.SuccessMsgChapter
+                </div>
+            }
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Chapter</th>
+                        <th>Name</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.SortOrder)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.ActionLink("View", "DetailChapter", new { id = item.Id }, new { @class = "btn btn-danger" })
+                                @if (User.IsInRole("admin"))
+                                {
+                                    @Html.ActionLink("Update", "UpdateChapter", new { id = item.Id }, new { @class = "btn btn-success" })
+
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @await Component.InvokeAsync("Pager", Model)
+    </div>
+</div>

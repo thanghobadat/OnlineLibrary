@@ -1,0 +1,89 @@
+﻿@model ViewModel.Catalog.Document.DocumentImageViewModel
+
+@{
+    ViewData["Title"] = "Image Imformation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Scripts{
+    <script>
+        setTimeout(function () {
+            $('msgAlertImage').fadeOut('slow');
+        }, 2000);
+    </script>
+}
+<div class="container-fluid">
+    <h1 class="mt-4">Category</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home Page</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Document">Document</a></li>
+        <li class="breadcrumb-item active">Image Imformation</li>
+    </ol>
+
+    <div class="card mb-12">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-6 col-xs-12">
+                    <a class="btn btn-success" asp-controller="Document" asp-action="Index">Back</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            @if (ViewBag.SuccessMsgImage != null)
+            {
+                <div id="msgAlertImage" class="alert alert-success" role="alert">
+                    @ViewBag.SuccessMsgImage
+                </div>
+            }
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.ImagePath)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Caption)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.DateCreated)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.FizeSize)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td>
+                            <img src="~/images/@Model.ImagePath" asp-append-version="true" height="70rem" width="70rem" />
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => Model.Caption)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => Model.DateCreated)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => Model.FizeSize)
+                        </td>
+                        <td>
+                            @Html.ActionLink("Update", "UpdateImage", new { id = Model.Id }, new { @class = "btn btn-success" })
+                            @if (Model.ImagePath != "a730a403-0e90-4cc0-af47-97c4ce3b1317.jpg")
+                            {
+                                @Html.ActionLink("Delete", "DeleteImage", new { id = Model.Id }, new { @class = "btn btn-primary" })
+
+                            }
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

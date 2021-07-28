@@ -1,0 +1,216 @@
+﻿@using ViewModel.Common;
+@model PageResult<ViewModel.Catalog.Document.DocumentViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Scripts{
+    <script>
+        setTimeout(function () {
+            $('msgAlert').fadeOut('slow');
+        }, 2000);
+    </script>
+}
+<div class="container-fluid">
+    <h1 class="mt-4">Document</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home Page</a></li>
+        <li class="breadcrumb-item active">Document</li>
+    </ol>
+
+    <div class="card mb-12">
+        <div class="card-header">
+
+            <div class="row">
+                @if (User.IsInRole("admin"))
+                {
+                    <div class="col-md-6 col-xs-12">
+                        <a class="btn btn-success" asp-controller="Document" asp-action="CreateDocument">Create new Document</a>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-6 col-xs-12">
+                        <a class="btn btn-success" asp-controller="Home" asp-action="Index">Back</a>
+                    </div>
+                }
+
+
+                <div class="col-md-6 col-xs-12">
+                    <form asp-action="Index" method="get">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <input type="text" value="@ViewBag.Keyword" name="keyword" class="form-control" />
+                            </div>
+
+                            <div class="col-md-4">
+                                <select name="categoryId" onchange="this.form.submit()" asp-items="@ViewBag.Categories" class="form-control">
+                                    <option>--Choose Category--</option>
+                                </select>
+                            </div>
+                            <div class="cold-md-4">
+                                <button type="submit" class="btn btn-primary">Search</button>
+                                <button type="button" onclick="window.location.href='/Document/Index'" class="btn btn-dark">Reset</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            @if (ViewBag.SuccessMsg != null)
+            {
+                <div id="msgAlert" class="alert alert-success" role="alert">
+                    @ViewBag.SuccessMsg
+                </div>
+            }
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Author</th>
+                        <th>Date Created</th>
+                        <th>View</th>
+                        <th>Action</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                        if (User.IsInRole("admin"))
+                        {
+                            <tr>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <a asp-action="DetailImage" asp-route-id="@item.Id" asp-controller="Document">
+                                                <img src="~/images/@item.ImagePath" asp-append-version="true" height="50rem" width="50rem" />
+                                            </a>
+                                        </div>
+                                        <div class="col-md-9">
+                                            @Html.DisplayFor(modelItem => item.Name)
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Description)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Author)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.DateCreated)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.View)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Detail", "DetailDocument", new { id = item.Id }, new { @class = "btn btn-danger" })
+                                    @Html.ActionLink("Update", "UpdateDocument", new { id = item.Id }, new { @class = "btn btn-success" })
+                                    @Html.ActionLink("Delete", "DeleteDocument", new { id = item.Id }, new { @class = "btn btn-primary" })
+                                    @Html.ActionLink("Asign Category", "IndexAssignCategory", new { id = item.Id }, new { @class = "btn btn-primary" })
+                                    @Html.ActionLink("View Chapter", "Index", "Chapter", new { id = item.Id }, new { @class = "btn btn-primary" })
+
+                                    @if (item.IsShow == true)
+                                    {
+                                        @Html.ActionLink("Hide", "HideDocument", "Document", new { id = item.Id }, new { @class = "btn btn-secondary" })
+
+                                    }
+                                    else
+                                    {
+                                        @Html.ActionLink("Show", "ShowDocument", "Document", new { id = item.Id }, new { @class = "btn btn-secondary" })
+                                    }
+
+
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            if (item.IsShow == true)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <a asp-action="DetailImage" asp-route-id="@item.Id" asp-controller="Document">
+                                                    <img src="~/images/@item.ImagePath" asp-append-version="true" height="50rem" width="50rem" />
+                                                </a>
+                                            </div>
+                                            <div class="col-md-9">
+                                                @Html.DisplayFor(modelItem => item.Name)
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Description)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Author)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.DateCreated)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.View)
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Detail", "DetailDocument", new { id = item.Id }, new { @class = "btn btn-danger" })
+                                        @{
+                                            int count = 0;
+
+
+                                            foreach (var docUser in ViewBag.DocUser)
+                                            {
+                                                int duration = DateTime.Compare(docUser.ExpirationDate, DateTime.Now);
+                                                if (docUser.DocumentId == item.Id && duration == 1)
+                                                {
+                                                    count += 1;
+                                                    @Html.ActionLink("View", "Index", "Chapter", new { id = item.Id }, new { @class = "btn btn-primary" })
+                                                    @using (Html.BeginForm("VoteDocument", "Document", 0))
+                                                    {
+                                                        <input type="hidden" name="documentId" value="@item.Id">
+                                                        <input type="hidden" name="userId" value="@ViewBag.userId">
+                                                        <button class="btn btn-info">Vote</button>
+                                                    }
+                                                }
+                                            }
+                                            foreach (var docUser in ViewBag.DocUser)
+                                            {
+                                                if (docUser.DocumentId == item.Id && docUser.RequestExtension == true)
+                                                {
+                                                    count += 1;
+                                                    <button class="btn btn-secondary">Waiting</button>
+                                                }
+                                            }
+                                            if (count == 0)
+                                            {
+                                                @using (Html.BeginForm("SendRequire", "Document"))
+                                                {
+                                                    <input type="hidden" name="documentId" value="@item.Id">
+                                                    <input type="hidden" name="userId" value="@ViewBag.userId">
+                                                    <button class="btn btn-info">Send Require</button>
+                                                }
+
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+
+                    }
+                </tbody>
+            </table>
+        </div>
+        @await Component.InvokeAsync("Pager", Model)
+    </div>
+</div>

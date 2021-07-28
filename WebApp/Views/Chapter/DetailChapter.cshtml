@@ -1,0 +1,96 @@
+﻿@model ViewModel.Catalog.Chapter.ChapterDetailViewModel
+
+@{
+    ViewData["Title"] = "Detail Chapter";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section Scripts{
+    <script>
+        function doNavigate() {
+            window.location.href = document.getElementById("UrlList").value;
+        }
+    </script>
+}
+<div class="container-fluid">
+    <h1 class="mt-4">@Model.CurrentDocument.Name - Chap @Model.Result.ResultObj.SortOrder</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home page</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Document">Document</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Chapter" asp-route-id="@Model.Result.ResultObj.DocumentId">@Model.CurrentDocument.Name</a></li>
+        <li class="breadcrumb-item active">@Model.CurrentDocument.Name - Chap @Model.Result.ResultObj.SortOrder</li>
+    </ol>
+    <div class="card mb-4">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-3">
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4">
+                            @if (Model.Result.ResultObj.SortOrder > 1)
+                            {
+                                <a class="btn btn-primary" asp-action="DetailChapter" asp-controller="Chapter" asp-route-id="@ViewBag.Pre">Previous</a>
+
+                            }
+                        </div>
+                        <div class="col-md-4">
+                            <select id="UrlList" onchange="doNavigate()">
+                                @foreach (var item in Model.ListChapters)
+                                {
+                                    if (item.SortOrder == Model.Result.ResultObj.SortOrder)
+                                    {
+                                        <option selected value="">Chapter @item.SortOrder</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@Url.Action("DetailChapter","Chapter",new { id = item.Id})">Chapter @item.SortOrder</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            @if (Model.Result.ResultObj.SortOrder < Model.ListChapters.Count)
+                            {
+                                <a class="btn btn-primary" asp-action="DetailChapter" asp-controller="Chapter" asp-route-id="@ViewBag.Next">Next</a>
+
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3"></div>
+            </div>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Result.ResultObj.Id)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Result.ResultObj.Id)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Result.ResultObj.SortOrder)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Result.ResultObj.SortOrder)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Result.ResultObj.Name)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Result.ResultObj.Name)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Result.ResultObj.Content)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Result.ResultObj.Content)
+                </dd>
+            </dl>
+        </div>
+
+    </div>
+</div>
+
